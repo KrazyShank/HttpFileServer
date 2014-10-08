@@ -1,0 +1,5 @@
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.exe.config
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.exe
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.pdb
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.exe
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.pdb

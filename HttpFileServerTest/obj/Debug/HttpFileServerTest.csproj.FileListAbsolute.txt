@@ -1,0 +1,5 @@
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServerTest\bin\Debug\HttpFileServerTest.exe.config
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServerTest\bin\Debug\HttpFileServerTest.exe
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServerTest\bin\Debug\HttpFileServerTest.pdb
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServerTest\obj\Debug\HttpFileServerTest.exe
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServerTest\obj\Debug\HttpFileServerTest.pdb
