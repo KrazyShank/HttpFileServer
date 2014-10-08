@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,11 +17,20 @@ namespace HttpFileServerTest
         {
             WebClient wc = new WebClient();
 
-            //wc.UploadData("http://localhost:8080", "POST", File.ReadAllBytes("C:/Users/Alec/Desktop/sweq.jpg"));
-            byte[] response = wc.DownloadData("http://localhost:8080/sweq.jpg");
-           // byte[] responce = wc.UploadData("http://localhost:8080", "GET", Encoding.ASCII.GetBytes("sweq.png"));
+            string extension = "jpg";
+            byte[] data = File.ReadAllBytes("C:/Users/Alec/Desktop/sweq.jpg");
 
-            Image.FromStream(new MemoryStream(response)).Save("C:/Users/Alec/Desktop/result.jpg");
+            MemoryStream s = new MemoryStream();
+            byte[] b;
+
+            using (BinaryWriter sr = new BinaryWriter(s))
+            {
+                sr.Write(extension);
+                sr.Write(data.Length);
+                sr.Write(data);
+                b = s.ToArray();
+            }
+            Process.Start(Encoding.ASCII.GetString(wc.UploadData("http://localhost:8080", "POST", b)));
         }
     }
 }
