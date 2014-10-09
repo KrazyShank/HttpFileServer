@@ -19,7 +19,7 @@ namespace HttpFileServer
         static string[] PREFIXES = { "http://+:80/" };
         static HttpListener Listener;
 
-        const int HASH_SIZE = 16;
+        const int HASH_SIZE = 8;
 
         static int NumGets = 0;
         static int NumPosts = 0;
@@ -42,18 +42,16 @@ namespace HttpFileServer
             Console.ReadLine();
         }
 
-        private static Random Random = new Random((int)DateTime.Now.Ticks);
-        private static string RandomName(int size)
+        private static Random Random = new Random();
+        public static string RandomHash(int length)
         {
-            StringBuilder builder = new StringBuilder();
-            char ch;
-            for (int i = 0; i < size; i++)
+            string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            StringBuilder result = new StringBuilder(length);
+            for (int i = 0; i < length; i++)
             {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * Random.NextDouble() + 65)));
-                builder.Append(ch);
+                result.Append(characters[Random.Next(characters.Length)]);
             }
-
-            return builder.ToString();
+            return result.ToString();
         }
 
         private static void BeginGetCallback(IAsyncResult result)
@@ -78,7 +76,7 @@ namespace HttpFileServer
             {
                 NumPosts++;
                 BinaryReader r = new BinaryReader(c.Request.InputStream);
-                string fileName = RandomName(HASH_SIZE) + "." + r.ReadString();
+                string fileName = RandomHash(HASH_SIZE) + "." + r.ReadString();
                 byte[] file = r.ReadBytes(r.ReadInt32());
                 r.Close();
 
