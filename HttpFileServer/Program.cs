@@ -80,7 +80,7 @@ namespace HttpFileServer
             {
                 NumPosts++;
                 BinaryReader r = new BinaryReader(c.Request.InputStream);
-                string fileName = RandomHash(HASH_SIZE) + "." + r.ReadString();
+                string fileName = RandomHash(HASH_SIZE) + "." + r.ReadString().ToLower();
                 byte[] file = r.ReadBytes(r.ReadInt32());
                 r.Close();
 
