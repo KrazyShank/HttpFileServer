@@ -15,6 +15,7 @@ namespace HttpFileServer
     class Program
     {
         const string DATA_DIR = "/Uploads";
+        //static string[] PREFIXES = { "http://localhost:8080/" };
         static string[] PREFIXES = { "http://+:80/" };
         static HttpListener Listener;
 
@@ -73,43 +74,58 @@ namespace HttpFileServer
 
         private static void HandlePost(HttpListenerContext c)
         {
-            NumPosts++;
-            BinaryReader r = new BinaryReader(c.Request.InputStream);
-            string fileName = RandomName(HASH_SIZE) + "." + r.ReadString();
-            byte[] file = r.ReadBytes(r.ReadInt32());
+            try
+            {
+                NumPosts++;
+                BinaryReader r = new BinaryReader(c.Request.InputStream);
+                string fileName = RandomName(HASH_SIZE) + "." + r.ReadString();
+                byte[] file = r.ReadBytes(r.ReadInt32());
+                r.Close();
 
-            File.WriteAllBytes(DATA_DIR + "/" + fileName, file);
-            Console.WriteLine("Recieved POST for " + file.Length + "byte file, storing at: " + fileName);
+                File.WriteAllBytes(DATA_DIR + "/" + fileName, file);
+                Console.WriteLine("Recieved POST for " + file.Length + "byte file, storing at: " + fileName);
 
-            byte[] response = Encoding.ASCII.GetBytes(c.Request.Url.Host + fileName);
-            c.Response.OutputStream.Write(response, 0, response.Length);
+                byte[] response = Encoding.ASCII.GetBytes("http://kronks.me/" + fileName);
+                c.Response.OutputStream.Write(response, 0, response.Length);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Post handle failed: \n" + e.ToString());
+            }
         }
 
         private static void HandleGet(HttpListenerContext c)
         {
-            NumGets++;
-            string requestedfile = DATA_DIR + c.Request.Url.AbsolutePath;
-
-            if (c.Request.Url.AbsolutePath.ToLower().Contains("random"))
+            try
             {
-                string[] possibleFiles = GetFiles(c.Request.Url.AbsolutePath.Split('.'));
+                NumGets++;
+                string requestedfile = DATA_DIR + c.Request.Url.AbsolutePath;
 
-                string randomFile = possibleFiles[Random.Next(0, possibleFiles.Length - 1)];
+                if (c.Request.Url.AbsolutePath.ToLower().Contains("random"))
+                {
+                    string[] possibleFiles = GetFiles(c.Request.Url.AbsolutePath.Split('.'));
 
-                Console.WriteLine("Recieved GET for random file, returned: " + randomFile);
+                    string randomFile = possibleFiles[Random.Next(0, possibleFiles.Length - 1)];
 
-                WriteFile(randomFile, c.Response.OutputStream);
+                    Console.WriteLine("Recieved GET for random file, returned: " + randomFile);
+
+                    WriteFile(randomFile, c.Response.OutputStream);
+                }
+                else if (File.Exists(requestedfile))
+                {
+                    Console.WriteLine("Recieved GET for " + requestedfile);
+                    WriteFile(requestedfile, c.Response.OutputStream);
+                }
+                else
+                {
+                    Console.WriteLine("Recieved GET for non-existing file " + requestedfile);
+                    byte[] file = GetErrorBitmap(requestedfile);
+                    c.Response.OutputStream.Write(file, 0, file.Length);
+                }
             }
-            else if (File.Exists(requestedfile))
+            catch (Exception e)
             {
-                Console.WriteLine("Recieved GET for " + requestedfile);
-                WriteFile(requestedfile, c.Response.OutputStream);
-            }
-            else
-            {
-                Console.WriteLine("Recieved GET for non-existing file " + requestedfile);
-                byte[] file = GetErrorBitmap(requestedfile);
-                c.Response.OutputStream.Write(file, 0, file.Length);
+                Console.WriteLine("Get handle failed: \n" + e.ToString());
             }
         }
 

@@ -17,8 +17,8 @@ namespace HttpFileServerTest
         {
             WebClient wc = new WebClient();
 
-            string extension = "jpg";
-            byte[] data = File.ReadAllBytes("C:/Users/Alec/Desktop/sweq.jpg");
+            string extension = "png";
+            byte[] data = File.ReadAllBytes("C:/Users/Alec/Desktop/sweq.png");
 
             MemoryStream s = new MemoryStream();
             byte[] b;
@@ -30,7 +30,14 @@ namespace HttpFileServerTest
                 sr.Write(data);
                 b = s.ToArray();
             }
-            Process.Start(Encoding.ASCII.GetString(wc.UploadData("http://localhost:8080", "POST", b)));
+
+            byte[] response = wc.UploadData("http://71.231.167.96/", "POST", b);
+            string url = Encoding.ASCII.GetString(response);
+            Console.WriteLine(url);
+            if (url.EndsWith(extension))
+                Process.Start(url);
+
+            Console.ReadLine();
         }
     }
 }
