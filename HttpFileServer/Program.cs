@@ -23,10 +23,11 @@ namespace HttpFileServer
 
         static int NumGets = 0;
         static int NumPosts = 0;
+        static long Bandwidth = 0; //bytes
 
         static void Main(string[] args)
         {
-            Console.Title = "Kapture Server - Gets: 0 Posts: 0";
+            Console.Title = "Kapture Server :: Gets: 0 - Posts: 0 - Bandwidth: 0MB";
             if (!Directory.Exists(DATA_DIR))
                 Directory.CreateDirectory(DATA_DIR);
 
@@ -67,7 +68,10 @@ namespace HttpFileServer
                 Console.WriteLine("Recieved invalid request type: " + request.Request.HttpMethod);
 
             request.Response.Close();
-            Console.Title = "Kapture Server - Gets: " + NumGets + " Posts: " + NumPosts;
+            Console.Title = "Kapture Server ::" + 
+                " Gets: " + NumGets + 
+                " - Posts: " + NumPosts + 
+                " - Bandwidth: " + (Bandwidth / 1024 / 1024) + "MB";
         }
 
         private static void HandlePost(HttpListenerContext c)
@@ -85,6 +89,8 @@ namespace HttpFileServer
 
                 byte[] response = Encoding.ASCII.GetBytes("http://kronks.me/" + fileName);
                 c.Response.OutputStream.Write(response, 0, response.Length);
+
+                Bandwidth += response.Length + file.Length + fileName.Length;
             }
             catch (Exception e)
             {
@@ -119,6 +125,7 @@ namespace HttpFileServer
                     Console.WriteLine("Recieved GET for non-existing file " + requestedfile);
                     byte[] file = GetErrorBitmap(requestedfile);
                     c.Response.OutputStream.Write(file, 0, file.Length);
+                    Bandwidth += file.Length;
                 }
             }
             catch (Exception e)
@@ -149,6 +156,7 @@ namespace HttpFileServer
         {
             byte[] file = File.ReadAllBytes(requestedFile);
             output.Write(file, 0, file.Length);
+            Bandwidth += file.Length;
         }
 
         static Font LargeFont = new Font("Segoe UI", 200.0f);
