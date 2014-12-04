@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using log4net;
 
 #endregion
 
@@ -11,13 +10,12 @@ namespace HttpFileServer
 {
     public class Settings : IDisposable
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (Settings));
         private readonly string _cfgFile;
         private readonly Dictionary<string, string> _values;
 
         public Settings()
         {
-            Log.InfoFormat("Loading settings...");
+            Console.WriteLine("Loading settings...");
 
             _values = new Dictionary<string, string>();
 
@@ -33,7 +31,7 @@ namespace HttpFileServer
                         var i = line.IndexOf(":", StringComparison.Ordinal);
                         if (i == -1)
                         {
-                            Log.InfoFormat("Invalid settings at line {0}.", lineNum);
+                            Console.WriteLine("Invalid settings at line {0}.", lineNum);
                             throw new ArgumentException("Invalid settings.");
                         }
                         var val = line.Substring(i + 1);
@@ -42,25 +40,32 @@ namespace HttpFileServer
                             val.Equals("null", StringComparison.InvariantCultureIgnoreCase) ? null : val);
                         lineNum++;
                     }
-                    Log.InfoFormat("Settings loaded.");
+                    Console.WriteLine("Settings loaded.");
                 }
             else
-                Log.Info("Settings not found.");
+                Console.WriteLine("Settings not found.");
         }
 
         public void Dispose()
         {
             try
             {
-                Log.InfoFormat("Saving settings...");
+                Console.WriteLine("Saving settings...");
                 using (var writer = new StreamWriter(File.OpenWrite(_cfgFile)))
                     foreach (var i in _values)
                         writer.WriteLine("{0}:{1}", i.Key, i.Value ?? "null");
             }
             catch (Exception e)
             {
-                Log.Error("Error when saving settings.", e);
+                Console.WriteLine("Error when saving settings.", e);
             }
+        }
+
+        public string GetValueUnsafe(string key)
+        {
+            string value;
+            _values.TryGetValue(key, out value);
+            return value;
         }
 
         public string GetValue(string key, string def = null)
@@ -70,7 +75,7 @@ namespace HttpFileServer
             {
                 if (def == null)
                 {
-                    Log.ErrorFormat("Attempt to access nonexistant settings '{0}'.", key);
+                    Console.WriteLine("Attempt to access nonexistant settings '{0}'.", key);
                     throw new ArgumentException(string.Format("'{0}' does not exist in settings.", key));
                 }
                 ret = _values[key] = def;
@@ -85,7 +90,7 @@ namespace HttpFileServer
             {
                 if (def == null)
                 {
-                    Log.ErrorFormat("Attempt to access nonexistant settings '{0}'.", key);
+                    Console.WriteLine("Attempt to access nonexistant settings '{0}'.", key);
                     throw new ArgumentException(string.Format("'{0}' does not exist in settings.", key));
                 }
                 ret = _values[key] = def;

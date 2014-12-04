@@ -4,3 +4,4 @@ C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\Http
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.exe
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.pdb
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.csprojResolveAssemblyReference.cache
+C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\config.cfg
