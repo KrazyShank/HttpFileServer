@@ -22,6 +22,12 @@ namespace HttpFileServer
         private static long _bandwidth; //bytes
         private static readonly Random Random = new Random();
 
+        private static readonly Settings Settings = new Settings();
+        private static readonly string _font = Settings.GetValue<string>("font");
+        private static readonly Font LargeFont = new Font(_font, 200.0f);
+        private static readonly Font MainFont = new Font(_font, 60.0f);
+        private static readonly Font SecondaryFont = new Font(_font, 20.0f);
+
         private static void Main(string[] args)
         {
             Console.Title = "Kapture Server :: Gets: 0 - Posts: 0 - Bandwidth: 0MB";
@@ -83,12 +89,31 @@ namespace HttpFileServer
             {
                 _numPosts++;
                 var r = new BinaryReader(c.Request.InputStream);
-                var fileName = RandomHash(HashSize) + "." + r.ReadString().ToLower();
-                var file = r.ReadBytes(r.ReadInt32());
-                r.Close();
 
-                File.WriteAllBytes(DataDir + "/" + fileName, file);
-                Console.WriteLine("Recieved POST for {0}byte file, storing at: {1}", file.Length, fileName);
+                string type = r.ReadString().ToLower();
+
+                string fileName;
+                byte[] file;
+                if (type == "page_url")
+                {
+                    string hash = RandomHash(HashSize);
+                    fileName = hash + ".redirect";
+                    file = r.ReadBytes(r.ReadInt32());
+                    File.WriteAllBytes(DataDir + "/" + fileName, file);
+                    Console.WriteLine("Recieved POST for redirect to {0}, storing at: {1}", 
+                        Encoding.ASCII.GetString(file), fileName);
+
+                    fileName = "/p/" + hash + "/";
+                }
+                else
+                {
+                    fileName = RandomHash(HashSize) + "." + r.ReadString().ToLower();
+                    file = r.ReadBytes(r.ReadInt32());
+                    File.WriteAllBytes(DataDir + "/" + fileName, file);
+                    Console.WriteLine("Recieved POST for {0}byte file, storing at: {1}", file.Length, fileName);
+                }
+                
+                r.Close();
 
                 var response = Encoding.ASCII.GetBytes(Settings.GetValue<string>("url") + fileName);
                 c.Response.OutputStream.Write(response, 0, response.Length);
@@ -117,8 +142,8 @@ namespace HttpFileServer
                 else if (c.Request.Url.AbsolutePath.ToLower().StartsWith("/tunnel/")) //Tunnel
                 {
                     string urlToLoad = 
-                        c.Request.Url.AbsolutePath.ToLower()
-                        .Replace("/tunnel/", "");
+                        c.Request.Url.ToString()
+                        .Split(new string[] {"/tunnel/"}, StringSplitOptions.None)[1];
 
                     //Provisioning
                     if (!urlToLoad.StartsWith("http://") ||
@@ -143,6 +168,31 @@ namespace HttpFileServer
                     //WebResponse response = WebRequest.Create(urlToLoad).GetResponse();
                     //WriteBytes(c, ReadFully(response.GetResponseStream()));
                     Console.WriteLine("\tReturned {0} bytes", pageData.Length);
+                }
+                else if (c.Request.Url.AbsolutePath.ToLower().StartsWith("/p/")) //Page redirect
+                {
+                    //Provisioning
+                    string query = DataDir + "/" + (c.Request.Url.ToString().ToLower()
+                        .Split(new string[] {"/p/"}, StringSplitOptions.None)[1]
+                        .Replace("/", ""))
+                        + ".redirect";
+
+                    Console.WriteLine("Recieved PAGE REQUEST {0}", query);
+
+                    if (File.Exists(query))
+                    {
+                        string destination = Encoding.ASCII.GetString(
+                            File.ReadAllBytes(query));
+                        c.Response.Redirect(destination);
+
+                        Console.WriteLine("Redirected to {0}", destination);
+                    }
+                    else
+                    {
+                        byte[] error = GetErrorBitmap("404", "Unknown redirect.");
+                        WriteBytes(c, error);
+                        Console.WriteLine("Unknown redirect!");
+                    }
                 }
                 else if (c.Request.Url.AbsolutePath.ToLower().StartsWith("/symlink/")) //Symbolic Link
                 {
@@ -179,7 +229,7 @@ namespace HttpFileServer
                 else //Unknown
                 {
                     Console.WriteLine("Recieved GET for non-existing file {0}", requestedfile);
-                    WriteBytes(c, GetErrorBitmap("404", requestedfile.Replace("/uploads/", "") + " not found"));
+                    WriteBytes(c, GetErrorBitmap("404", requestedfile.Replace("/Uploads/", "") + " not found"));
                 }
             }
             catch (Exception e)
@@ -267,11 +317,5 @@ namespace HttpFileServer
             }
             return imageBytes;
         }
-
-        private static readonly Settings Settings = new Settings();
-        private static readonly string _font = Settings.GetValue<string>("font");
-        private static readonly Font LargeFont = new Font(_font, 200.0f);
-        private static readonly Font MainFont = new Font(_font, 60.0f);
-        private static readonly Font SecondaryFont = new Font(_font, 20.0f);
     }
 }

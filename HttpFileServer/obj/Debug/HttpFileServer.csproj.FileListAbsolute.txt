@@ -5,3 +5,16 @@ C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\Http
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.pdb
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.csprojResolveAssemblyReference.cache
 C:\Users\Alec\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\config.cfg
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.exe.config
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.exe
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.pdb
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\config.cfg
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.exe
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\HttpFileServer.pdb
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\mscorlib.dll
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\normidna.nlp
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\normnfc.nlp
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\normnfd.nlp
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\normnfkc.nlp
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\bin\Debug\normnfkd.nlp
+C:\Users\Alec Audet\Google Drive\Projects\HttpFileServer\HttpFileServer\obj\Debug\HttpFileServer.csprojResolveAssemblyReference.cache
