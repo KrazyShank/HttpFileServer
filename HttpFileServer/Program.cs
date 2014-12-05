@@ -103,7 +103,7 @@ namespace HttpFileServer
                     Console.WriteLine("Recieved POST for redirect to {0}, storing at: {1}", 
                         Encoding.ASCII.GetString(file), fileName);
 
-                    fileName = "/p/" + hash + "/";
+                    fileName = "p/" + hash + "/";
                 }
                 else
                 {
